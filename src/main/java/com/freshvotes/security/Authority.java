@@ -16,7 +16,7 @@ public class Authority implements GrantedAuthority {
     private static final long serialVersionUID = 1L;
     private String authority; // these are roles :)
     private Long id;
-    private User user;
+    private User user; // foreign key mapping to a user
 
     @Override
     public String getAuthority() {
