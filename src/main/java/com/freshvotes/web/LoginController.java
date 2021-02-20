@@ -3,6 +3,7 @@ package com.freshvotes.web;
 import com.freshvotes.domain.User;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,13 +18,14 @@ public class LoginController {
     }
 
     @GetMapping("/register")
-    public String register() {
+    public String register(ModelMap model) {
+        model.put("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
     public String registerPost(@ModelAttribute User user) {
         System.out.println(user);
-        return "redirect:/login";
+        return "redirect:/register";
     }
 }
