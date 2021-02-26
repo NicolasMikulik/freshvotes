@@ -1,16 +1,24 @@
 package com.freshvotes.web;
 
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.freshvotes.domain.Product;
 import com.freshvotes.domain.User;
 import com.freshvotes.repositories.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javassist.NotFoundException;
 
 @Controller
 public class ProductController {
@@ -24,7 +32,18 @@ public class ProductController {
     }
 
     @GetMapping("/products/{productId}")
-    public String getProduct(@PathVariable Long productId) {
+    public String getProduct(@PathVariable Long productId, ModelMap model, HttpServletResponse response)
+            throws IOException {
+        Optional<Product> productOpt = productRepo.findById(productId); // findById returns an optional class
+                                                                        // Product, which can potentially return
+                                                                        // nothing (null), optional is a wrapper around
+                                                                        // the product, gives us methods
+        if (productOpt.isPresent()) { // if it is in DB
+            Product product = productOpt.get();
+            model.put("product", product);
+        } else { // if product is not in DB
+            response.sendError(HttpStatus.NOT_FOUND.value(), "Product with id " + productId + " was not found.");
+        }
         return "product";
     }
 
