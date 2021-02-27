@@ -17,10 +17,11 @@
                         <input type="text" name="name" id="name" class="form-control" th:field="${product.name}"/>
                     </div>
                 </div>
-                <div th:text="|Is product published: ${product.published}|">
-                    Sample text
+                <div class="form-check form-switch" style="margin-top: .5em;">
+                    <input type="checkbox" class="form-check-input" th:field="${product.published}">
+                    <label for="published1" class="form-check-label">Is product published</label>
                 </div>
-                <button class="btn-primary btn">Save Product</button>
+                <button class="btn-primary btn btn-lg" style="margin-top: 0.5em;">Save Product</button>
             </form>
         </div>
     </body>
