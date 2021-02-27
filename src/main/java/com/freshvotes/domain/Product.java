@@ -63,4 +63,10 @@ public class Product {
     public void setPublished(Boolean published) {
         this.published = published;
     }
+
+    @Override
+    public String toString() {
+        return "Product [features=" + features + ", id=" + id + ", name=" + name + ", published=" + published
+                + ", user=" + user + "]";
+    }
 }

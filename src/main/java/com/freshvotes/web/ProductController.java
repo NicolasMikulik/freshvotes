@@ -33,10 +33,10 @@ public class ProductController {
     @GetMapping("/products/{productId}")
     public String getProduct(@PathVariable Long productId, ModelMap model, HttpServletResponse response)
             throws IOException {
-        Optional<Product> productOpt = productRepo.findById(productId); // findById returns an optional class
-                                                                        // Product, which can potentially return
-                                                                        // nothing (null), optional is a wrapper around
-                                                                        // the product, gives us methods
+        Optional<Product> productOpt = productRepo.findByIdWithUser(productId); // findById returns an optional class
+        // Product, which can potentially return
+        // nothing (null), optional is a wrapper around
+        // the product, gives us methods
         if (productOpt.isPresent()) { // if it is in DB
             Product product = productOpt.get();
             model.put("product", product);
