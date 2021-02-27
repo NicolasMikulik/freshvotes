@@ -24,10 +24,11 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepo;
 
-    @GetMapping("/products")
-    public String getProducts(ModelMap model) {
-        return "product";
-    }
+    // @GetMapping("/products")
+    // public String getProducts(@AuthenticationPrincipal User user, ModelMap model)
+    // {
+    // return "products";
+    // }
 
     @GetMapping("/products/{productId}")
     public String getProduct(@PathVariable Long productId, ModelMap model, HttpServletResponse response)
