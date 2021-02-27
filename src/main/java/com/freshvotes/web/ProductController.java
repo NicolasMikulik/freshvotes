@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javassist.NotFoundException;
-
 @Controller
 public class ProductController {
 
@@ -45,6 +43,13 @@ public class ProductController {
             response.sendError(HttpStatus.NOT_FOUND.value(), "Product with id " + productId + " was not found.");
         }
         return "product";
+    }
+
+    @PostMapping("/products/{productId}")
+    public String saveProduct(@PathVariable Long productId, Product product) {
+        System.out.println(product);
+        product = productRepo.save(product);
+        return "redirect:/products/" + product.getId();
     }
 
     @PostMapping("/products")
