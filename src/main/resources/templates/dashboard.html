@@ -25,19 +25,25 @@
                 </div>
             </div>
 
-            <div th:if="${products != null}">
-                <div class="row">
-                    <div class="col">
-                        <h1>Products</h1>
+            <div style="padding: 2rem 1rem;
+                        margin-bottom: 2rem;
+                        background-color: #e9ecef;
+                        border-radius: .3rem;">
+                <div th:if="${products != null}">
+                    <div class="row">
+                        <div class="col" style="margin-top:-1em;">
+                            <h2>Products</h2>
+                        </div>
                     </div>
-                </div>
-                <div class="row" th:each="product : ${products}">
-                    <div class="col">
-                        <a th:href="@{/products/{productId}(productId=${product.id})}" th:text="${product.name}"></a>
+
+                    <div class="row" th:each="product : ${products}">
+                        <div class="col">
+                            <a th:href="@{/products/{productId}(productId=${product.id})}" th:text="${product.name}"></a>
+                        </div>
                     </div>
                 </div>
             </div>
-
+                
             <div class="row">
                 <div class="col">
                     <form action="/products" method="POST">
