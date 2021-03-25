@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
 
     </head>
@@ -22,8 +23,30 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarText">
+                        <ul class="navbar-nav me-auto" sec:authorize="isAuthenticated()">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/dashboard">Dashboard</a>
+                            </li>
+                        </ul>
+                        
                         <div class="d-flex ms-auto">
-                            <button class="form-control btn-primary btn btn-lg">Log in</button>
+                            <div sec:authorize="!isAuthenticated()">
+                                <button class="form-control btn-primary btn btn-lg" id="loginBtn">Log in</button>
+                                <script type="text/javascript">
+                                $(function () {
+                                    $("#loginBtn").click(function () {
+                                        window.location.href = '/login'
+                                    })
+                                });
+                            </script>
+                            </div>
+
+                            <div sec:authorize="isAuthenticated()">
+                                <form action="/logout" method="POST" class="text-right">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button class="form-control btn btn-secondary btn-lg" type="submit">Logout</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
