@@ -1,6 +1,5 @@
 package com.freshvotes.web;
 
-import com.freshvotes.domain.Feature;
 import com.freshvotes.service.FeatureService;
 
 import org.springframework.beans.factory.annotation.Autowired;
