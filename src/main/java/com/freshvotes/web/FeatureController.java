@@ -1,10 +1,14 @@
 package com.freshvotes.web;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-
 import com.freshvotes.domain.Feature;
 import com.freshvotes.service.FeatureService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/products/{productId}/features")
 public class FeatureController {
+
+    Logger log = LoggerFactory.getLogger(FeatureController.class);
 
     @Autowired
     private FeatureService featureService;
@@ -42,7 +48,15 @@ public class FeatureController {
     @PostMapping("{featureId}")
     public String updateFeature(Feature feature, @PathVariable Long productId, @PathVariable Long featureId) {
         feature = featureService.save(feature);
-
-        return "redirect:/products/" + productId + "/features/" + feature.getId();
+        String encodedProductName;
+        try {
+            encodedProductName = URLEncoder.encode(feature.getProduct().getName(), StandardCharsets.UTF_8.toString());
+            System.out.println(encodedProductName);
+        } catch (UnsupportedEncodingException e) {
+            log.warn("Incorrect URL encoding of " + feature.getProduct().getName() + ", redirecting to dashboard.");
+            return "redirect:/dashboard";
+        }
+        System.out.println(encodedProductName);
+        return "redirect:/p/" + encodedProductName;
     }
 }
