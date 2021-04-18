@@ -19,7 +19,16 @@
                 </div>
             </div>
 
-            <div style="padding: 2rem 1rem;
+            <div class="card" th:each="product : ${products}" style="margin: 1em 0em">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.name}">Special title treatment</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="|${product.published ? 'Published' : 'Not Published'}|">Card subtitle</h6>
+                    <a th:href="@{/products/{productId}(productId=${product.id})}" class="btn btn-info">Edit</a>
+                    <a th:href="@{/p/{productName}(productName=${product.name})}" class="btn btn-info">View Feature Requests</a>
+                </div>
+            </div>
+
+            <!-- <div style="padding: 2rem 1rem;
                         margin-bottom: 2rem;
                         background-color: #e9ecef;
                         border-radius: .3rem;">
@@ -36,7 +45,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
                 
             <div class="row">
                 <div class="col">

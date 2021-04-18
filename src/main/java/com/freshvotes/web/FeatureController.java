@@ -5,11 +5,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import com.freshvotes.domain.Feature;
+import com.freshvotes.domain.User;
 import com.freshvotes.service.FeatureService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +29,10 @@ public class FeatureController {
     private FeatureService featureService;
 
     @PostMapping("") // -> ends up mapping to /products/{productId}/features/
-    public String createFeature(@PathVariable Long productId) {
-        Feature feature = featureService.createFeature(productId); // little business logic in controller, too much
-                                                                   // shows bad design
+    public String createFeature(@AuthenticationPrincipal User user, @PathVariable Long productId) {
+        Feature feature = featureService.createFeature(productId, user); // little business logic in controller, too
+                                                                         // much
+        // shows bad design
 
         return "redirect:/products/" + productId + "/features/" + feature.getId();
     }
@@ -46,7 +49,9 @@ public class FeatureController {
     }
 
     @PostMapping("{featureId}")
-    public String updateFeature(Feature feature, @PathVariable Long productId, @PathVariable Long featureId) {
+    public String updateFeature(@AuthenticationPrincipal User user, Feature feature, @PathVariable Long productId,
+            @PathVariable Long featureId) {
+        feature.setUser(user);
         feature = featureService.save(feature);
         String encodedProductName;
         try {
