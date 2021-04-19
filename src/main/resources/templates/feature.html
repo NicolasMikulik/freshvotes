@@ -36,6 +36,12 @@
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
+        <div class="" style="margin-top: 2em;">
+            <h2>Comments</h2>
+            <div class="" th:each="comment : ${comments}">
+                <span th:text="${comment.text}"></span>
+            </div>
+        </div>
     </div>
 </body>
 
