@@ -78,7 +78,7 @@ public class Feature {
         this.user = user;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pk.feature")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "feature")
     public Set<Comment> getComments() {
         return comments;
     }
