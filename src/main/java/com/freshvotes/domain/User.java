@@ -14,8 +14,12 @@ import javax.persistence.Table;
 
 import com.freshvotes.security.Authority;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "users")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class User {
     private Long id;
     private String username;
