@@ -38,9 +38,15 @@
         </form>
         <div class="" style="margin-top: 2em;">
             <h2>Comments</h2>
-            <div class="" th:each="comment : ${comments}">
-                <span th:text="${comment.text}"></span>
-            </div>
+            <form action="" method="post">
+                <div class="mb-3" style="margin-top: 1.5em;">
+                    <label for="exampleFormControlTextarea1" class="form-label">Leave a comment below!</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+                <div class="" th:each="comment : ${comments}">
+                    <span th:text="${comment.text}"></span>
+                </div>
+            </form>
         </div>
     </div>
 </body>
