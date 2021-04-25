@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Set;
+
+import com.freshvotes.domain.Comment;
 import com.freshvotes.domain.Feature;
 import com.freshvotes.domain.User;
 import com.freshvotes.service.FeatureService;
@@ -44,11 +47,16 @@ public class FeatureController {
         if (featureOpt.isPresent()) {
             Feature feature = featureOpt.get();
             model.put("feature", feature);
-            model.put("comments", feature.getComments());
+            model.put("comments", getCommentsWithoutDuplicates(feature));
         }
         // TODO: handle the situation where we can't find a feature by featureId
         model.put("user", user); // user denotes the logged-in user
         return "feature";
+    }
+
+    private Set<Comment> getCommentsWithoutDuplicates(Feature feature) {
+        Set<Comment> comments = feature.getComments();
+        return comments;
     }
 
     @PostMapping("{featureId}")
