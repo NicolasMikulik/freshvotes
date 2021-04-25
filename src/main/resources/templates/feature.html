@@ -44,9 +44,15 @@
                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
                 <div class="" th:each="comment : ${comments}">
-                    <span th:if="${comment.comment == null}" th:text="${comment.text}"></span>
-                    <div th:each="commentLevel1: ${comment.comments}" style="margin-left: 1em;">
+                    <span th:text="${comment.text}"></span>
+                    <div th:each="commentLevel1 : ${comment.comments}" style="margin-left: 1em;">
                         <span th:text="${commentLevel1.text}"></span>
+                        <div th:each="commentLevel2 : ${commentLevel1.comments}" style="margin-left: 1em;">
+                            <span th:text="${commentLevel2.text}"></span>
+                            <div th:each="commentLevel3 : ${commentLevel2.comments}" style="margin-left: 1em;">
+                                <span th:text="${commentLevel3.text}"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

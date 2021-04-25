@@ -2,14 +2,11 @@ package com.freshvotes.web;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
-
-import com.freshvotes.domain.Comment;
-import com.freshvotes.domain.Feature;
-import com.freshvotes.domain.User;
-import com.freshvotes.service.FeatureService;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,40 +19,59 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.freshvotes.domain.Comment;
+import com.freshvotes.domain.Feature;
+import com.freshvotes.domain.User;
+import com.freshvotes.service.FeatureService;
+
 @Controller
 @RequestMapping("/products/{productId}/features")
 public class FeatureController {
-
     Logger log = LoggerFactory.getLogger(FeatureController.class);
 
     @Autowired
     private FeatureService featureService;
 
-    @PostMapping("") // -> ends up mapping to /products/{productId}/features/
+    @PostMapping("") // this maps to -> '/products/{productId}/features'
     public String createFeature(@AuthenticationPrincipal User user, @PathVariable Long productId) {
-        Feature feature = featureService.createFeature(productId, user); // little business logic in controller, too
-                                                                         // much
-        // shows bad design
+        Feature feature = featureService.createFeature(productId, user);
 
         return "redirect:/products/" + productId + "/features/" + feature.getId();
+
     }
 
     @GetMapping("{featureId}")
-    public String getFeature(@AuthenticationPrincipal User user, @PathVariable Long productId,
-            @PathVariable Long featureId, ModelMap model) {
+    public String getFeature(@AuthenticationPrincipal User user, ModelMap model, @PathVariable Long productId,
+            @PathVariable Long featureId) {
         Optional<Feature> featureOpt = featureService.findById(featureId);
         if (featureOpt.isPresent()) {
             Feature feature = featureOpt.get();
             model.put("feature", feature);
-            model.put("comments", getCommentsWithoutDuplicates(feature));
+            Set<Comment> commentsWithoutDuplicates = getCommentsWithoutDuplicates(0, new HashSet<Long>(),
+                    feature.getComments());
+            model.put("comments", commentsWithoutDuplicates);
         }
-        // TODO: handle the situation where we can't find a feature by featureId
-        model.put("user", user); // user denotes the logged-in user
+        // TODO: handle the situation where we can't find a feature by the featureId
+        model.put("user", user);
+
         return "feature";
     }
 
-    private Set<Comment> getCommentsWithoutDuplicates(Feature feature) {
-        Set<Comment> comments = feature.getComments();
+    private Set<Comment> getCommentsWithoutDuplicates(int page, Set<Long> visitedComments, Set<Comment> comments) {
+        page++;
+        Iterator<Comment> itr = comments.iterator();
+        while (itr.hasNext()) {
+            Comment comment = itr.next();
+            boolean addedToVisitedComments = visitedComments.add(comment.getId());
+            if (!addedToVisitedComments) {
+                itr.remove();
+                if (page != 1)
+                    return comments;
+            }
+            if (addedToVisitedComments && !comment.getComments().isEmpty())
+                getCommentsWithoutDuplicates(page, visitedComments, comment.getComments());
+        }
+
         return comments;
     }
 
@@ -66,13 +82,14 @@ public class FeatureController {
         feature = featureService.save(feature);
         String encodedProductName;
         try {
-            encodedProductName = URLEncoder.encode(feature.getProduct().getName(), StandardCharsets.UTF_8.toString());
-            System.out.println(encodedProductName);
+            encodedProductName = URLEncoder.encode(feature.getProduct().getName(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            log.warn("Incorrect URL encoding of " + feature.getProduct().getName() + ", redirecting to dashboard.");
+            log.warn("Unable to encode the URL string: " + feature.getProduct().getName()
+                    + ", redirecting to dashboard instead of the intended product user view page.");
             return "redirect:/dashboard";
         }
-        System.out.println(encodedProductName);
+
         return "redirect:/p/" + encodedProductName;
     }
+
 }
