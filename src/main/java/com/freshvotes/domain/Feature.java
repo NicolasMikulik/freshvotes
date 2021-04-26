@@ -1,6 +1,6 @@
 package com.freshvotes.domain;
 
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
@@ -11,15 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-//POST -> freshvotes.com/products/{productId}/features (create a feature request)
-//GET ->  freshvotes.com/products/{productId}/features/{featureId} (get a feature)
+// POST -> freshvotes.com/products/{productId}/features   (create a feature request)
+// GET ->  freshvotes.com/products/{productId}/features/{featureId}   (get a feature)
 @Entity
-@Table
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Feature {
     private Long id;
@@ -28,7 +27,7 @@ public class Feature {
     private String status;
     private Product product;
     private User user;
-    private Set<Comment> comments = new TreeSet<>();
+    private SortedSet<Comment> comments = new TreeSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,11 +82,12 @@ public class Feature {
     }
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "feature")
-    public Set<Comment> getComments() {
+    @OrderBy("createdDate, id")
+    public SortedSet<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(SortedSet<Comment> comments) {
         this.comments = comments;
     }
 }

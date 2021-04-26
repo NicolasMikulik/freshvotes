@@ -1,7 +1,7 @@
 package com.freshvotes.domain;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.Column;
@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,18 +25,9 @@ public class Comment implements Comparable<Comment> {
     private String text;
     private User user;
     private Feature feature;
-    private Set<Comment> comments = new TreeSet<>();
+    private SortedSet<Comment> comments = new TreeSet<>();
     private Comment comment;
     private Date createdDate;
-
-    @Column(length = 5000)
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +37,15 @@ public class Comment implements Comparable<Comment> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Column(length = 5000)
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @ManyToOne
@@ -68,11 +69,12 @@ public class Comment implements Comparable<Comment> {
     }
 
     @OneToMany(mappedBy = "comment")
-    public Set<Comment> getComments() {
+    @OrderBy("createdDate, id")
+    public SortedSet<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(SortedSet<Comment> comments) {
         this.comments = comments;
     }
 
@@ -131,6 +133,6 @@ public class Comment implements Comparable<Comment> {
         if (comparedValue == 0) {
             comparedValue = this.id.compareTo(that.id);
         }
-        return 0;
+        return comparedValue;
     }
 }
